@@ -11,6 +11,10 @@ struct CMyImplUnionFind::SImplementation{
     std::vector<std::shared_ptr<SNode> > DElements;
 
 
+    bool IsValidElementID(TElementID element) const{
+        return element < DElements.size();
+    }
+
     std::size_t Size() const{
         return DElements.size();
     }
@@ -33,14 +37,32 @@ struct CMyImplUnionFind::SImplementation{
     }
 
     bool Union(TElementID a, TElementID b){
-        
+        if(IsValidElementID(a) && IsValidElementID(b)){
+            auto AGroup = Find(a);
+            auto BGroup = Find(b);
+            if(AGroup != BGroup){
+                DElements[BGroup]->DParent = DElements[AGroup];
+                return true;
+            }
+        }
+        return false;
     }
+
     TGroupID Find(TElementID a) const{
-        
+        if(IsValidElementID(a)){
+            auto CurrentNode = DElements[a];
+            while(CurrentNode->DParent){
+                CurrentNode = CurrentNode->DParent;
+            }
+            return CurrentNode->DID;
+        }
+        return InvalidGroupID;
     }
 
     bool Connected(TElementID a, TElementID b){
-        
+        auto AGroup = Find(a);
+        auto BGroup = Find(b);
+        return AGroup != InvalidGroupID && AGroup == BGroup;
     }
 };
 CMyImplUnionFind::CMyImplUnionFind(){

@@ -29,6 +29,10 @@ TEST_UNION_FIND_OBJ_FILES	= $(TESTS_OBJ_DIR)/UnionFindTest.o 			\
 
 TEST_UNION_FIND_TARGET		= $(TESTS_BIN_DIR)/testunionfind
 
+TEST_MAP_OBJ_FILES			= $(TESTS_OBJ_DIR)/MapTest.o
+
+TEST_MAP_TARGET				= $(TESTS_BIN_DIR)/testmap
+
 ANALYSIS_OBJ_FILES		= $(OBJ_DIR)/analysis.o   				\
 							$(OBJ_DIR)/MaxSizeDeque.o  			\
 							$(OBJ_DIR)/VariableSizeDeque.o  
@@ -38,12 +42,16 @@ ANALYSIS_TARGET			= $(BIN_DIR)/analysis
 all: make_directories 			\
 	$(TEST_UNION_FIND_TARGET) 	\
 	run_testunionfind			\
+	run_testmap					\
 	generate_coverage 			\
 	$(ANALYSIS_TARGET)
 
 
 run_testunionfind: $(TEST_UNION_FIND_TARGET)
 	$(TEST_UNION_FIND_TARGET)
+
+run_testmap: $(TEST_MAP_TARGET)
+	$(TEST_MAP_TARGET)
 
 generate_coverage:
 	$(LCOV) --capture --directory `pwd` --output-file $(COVERAGE_INFO_FILE) --ignore-errors inconsistent,source 2> lcov.err && \
@@ -55,6 +63,9 @@ $(ANALYSIS_TARGET): $(ANALYSIS_OBJ_FILES)
 	$(CXX) $(CPPFLAGS) $(ANALYSIS_OBJ_FILES) $(LDFLAGS) -o $@
 
 $(TEST_UNION_FIND_TARGET): $(TEST_UNION_FIND_OBJ_FILES)
+	$(CXX) $(TEST_CPPFLAGS) $^  $(TEST_LDFLAGS) -o $@
+
+$(TEST_MAP_TARGET): $(TEST_MAP_OBJ_FILES)
 	$(CXX) $(TEST_CPPFLAGS) $^  $(TEST_LDFLAGS) -o $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
