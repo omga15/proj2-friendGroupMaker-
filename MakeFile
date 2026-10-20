@@ -39,6 +39,9 @@ ANALYSIS_OBJ_FILES		= $(OBJ_DIR)/analysis.o   				\
 
 ANALYSIS_TARGET			= $(BIN_DIR)/analysis
 
+VALGRIND            = valgrind
+VALGRIND_FLAGS      = --leak-check=full --errors-for-leak-kinds=definite,indirect --error-exitcode=1
+
 all: make_directories 			\
 	$(TEST_UNION_FIND_TARGET) 	\
 	run_testunionfind			\
@@ -46,6 +49,11 @@ all: make_directories 			\
 	generate_coverage 			\
 	$(ANALYSIS_TARGET)
 
+run_valgrind_analysis: $(ANALYSIS_TARGET)
+	$(VALGRIND) $(VALGRIND_FLAGS) $(ANALYSIS_TARGET) --max 256 -i 1024 -i 2048 -i 4096 -i 8192
+
+run_analysis: run_valgrind_analysis
+	$(ANALYSIS_TARGET) --max 256 -i 1024 -i 2048 -i 4096 -i 8192 
 
 run_testunionfind: $(TEST_UNION_FIND_TARGET)
 	$(TEST_UNION_FIND_TARGET)

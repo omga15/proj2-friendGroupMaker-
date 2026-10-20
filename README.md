@@ -1,19 +1,22 @@
-# Project X README
+# Project Finding Friend Group README
 
-Student 1: Partner1 Name (123456789)
+Student 1: Patrick Wang (924885084)
 
-Student 2: Partner2 Name (123456987)
+Student 2: _______ ______ (______)
 
 ## Project Status
-This the current status of the project ...
+This the current status of the project
 
 ## Known Issues
-The project fails to function properly in ...
+The project fails to function properly in 
 
 ## Code References
 * [Different ways to initialize variables](https://stackoverflow.com/questions/22543875/different-ways-to-initialize-variables)
 * [Some other link](https://stackoverflow.com)
+## Our Code references
 
+
+# Template for Ai use
 ## Generative AI Use
 I used ChatGPT for Prompt 1, and ZZZZZ for Prompt 2....
 
@@ -41,7 +44,7 @@ In this example, the `for (char c : myString)` loop iterates over each character
 
 This is a concise and readable way to iterate over the characters in a string in C++17.
 
-### Chagnes 1
+### Changes 1
 I only needed the `for` loop part, and my string was named `bar` so I changed it to just:
 ```cpp
 // AI Generated
