@@ -14,7 +14,15 @@ The project fails to function properly in
 * [Different ways to initialize variables](https://stackoverflow.com/questions/22543875/different-ways-to-initialize-variables)
 * [Some other link](https://stackoverflow.com)
 ## Our Code references
-
+* [Idea of Key and value](https://www.mongodb.com/resources/basics/databases/key-value-database#how-do-key-value-databases-work)
+* [__________](____________)
+* [__________](____________)
+* [__________](____________)
+* [__________](____________)
+* [__________](____________)
+* [__________](____________)
+* [__________](____________)
+* [__________](____________)
 
 # Template for Ai use
 ## Generative AI Use

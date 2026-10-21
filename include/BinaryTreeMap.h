@@ -52,14 +52,54 @@ class CBinaryTreeMap: public CMap<K,V>{
                 }
                 return false;
             }
+            // Need more work
+            void GetMax(K &maxKey, V &maxVal){
+                if(DRight){
+                    DRight->GetMax(maxKey,maxVal);
+                } else {
+                    maxKey = DKey;
+                    maxVal = DValue;
+                }
+            }
 
+            void GetMin(K &minKey, V &minVal) {
+                if (DLeft) {
+                    DLeft->GetMin(minKey, minVal);
+                } else {
+                    minKey = DKey;
+                    minVal = DValue;
+                }
+            }
             bool Remove(const K &key, bool &removeme){
                 if(key == DKey){
                     if(DLeft){
                         // Get the right most value of left subtree and remove
+                        K RMKey;
+                        V RMValue;
+                        DLeft-> GetMax(RMKey,RMValue);
+                        DKey = RMKey;
+                        DValue = RMValue;
+
+                        if (DLeft->Remove(RMKey, removeme)) {
+                            if (removeme) {
+                                DLeft.reset();
+                            }
+                            removeme = false;
+                        }
                     }
                     else if(DRight){
                         // Get the left most value of right subtree and remove
+                        K LMKey;
+                        V LMValue;
+                        DRight-> GetMin(LMKey,LMValue);
+                        DKey = LMKey;
+                        DValue = LMValue;
+                        if (DRight->Remove(LMKey, removeme)) {
+                            if (removeme) {
+                                DRight.reset();
+                            }
+                            removeme = false;
+                        }
                     }
                     else{
                         // remove this node
@@ -82,7 +122,7 @@ class CBinaryTreeMap: public CMap<K,V>{
                 if(DRight){
                     if(DRight->Remove(key,removeme)){
                         if(removeme){
-                            DRight.reseet();
+                            DRight.reset();
                         }
                         removeme = false;
                         return true;
@@ -137,7 +177,9 @@ class CBinaryTreeMap: public CMap<K,V>{
         }
 
         void ForEach(CMap<K,V>::TEntityFunction fun) override{
-            
+            // do soemthing with the friends that someone made
+            K key;
+            V value;
         }
 };
 

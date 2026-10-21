@@ -33,6 +33,12 @@ TEST_MAP_OBJ_FILES			= $(TESTS_OBJ_DIR)/MapTest.o
 
 TEST_MAP_TARGET				= $(TESTS_BIN_DIR)/testmap
 
+#make friend here
+TEST_FRIEND_GROUP_FILES 	= $(TESTS_OBJ_DIR)/FriendGroupsTest.o		\
+							  $(TESTS_OBJ_DIR)/FriendGroups.o
+
+TEST_FRIEND_GROUP_TARGET 	= $(TESTS_BIN_DIR)/testfriendgroups
+
 ANALYSIS_OBJ_FILES		= $(OBJ_DIR)/analysis.o   				\
 							$(OBJ_DIR)/MaxSizeDeque.o  			\
 							$(OBJ_DIR)/VariableSizeDeque.o  
@@ -46,6 +52,7 @@ all: make_directories 			\
 	$(TEST_UNION_FIND_TARGET) 	\
 	run_testunionfind			\
 	run_testmap					\
+	run_testfriendsgroup		\
 	generate_coverage 			\
 	$(ANALYSIS_TARGET)
 
@@ -59,7 +66,10 @@ run_testunionfind: $(TEST_UNION_FIND_TARGET)
 	$(TEST_UNION_FIND_TARGET)
 
 run_testmap: $(TEST_MAP_TARGET)
-	$(TEST_MAP_TARGET)
+	$(TEST_MAP_TARGET) 
+
+run_testfriendsgroup: $(TEST_FRIEND_GROUP_TARGET)
+	$(TEST_FRIEND_GROUP_TARGET)
 
 generate_coverage:
 	$(LCOV) --capture --directory `pwd` --output-file $(COVERAGE_INFO_FILE) --ignore-errors inconsistent,source 2> lcov.err && \
@@ -74,6 +84,10 @@ $(TEST_UNION_FIND_TARGET): $(TEST_UNION_FIND_OBJ_FILES)
 	$(CXX) $(TEST_CPPFLAGS) $^  $(TEST_LDFLAGS) -o $@
 
 $(TEST_MAP_TARGET): $(TEST_MAP_OBJ_FILES)
+	$(CXX) $(TEST_CPPFLAGS) $^  $(TEST_LDFLAGS) -o $@
+
+## friend tests
+$(TEST_FRIEND_GROUP_TARGET): $(TEST_FRIEND_GROUP_FILES)
 	$(CXX) $(TEST_CPPFLAGS) $^  $(TEST_LDFLAGS) -o $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
