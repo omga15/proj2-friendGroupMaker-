@@ -2,7 +2,7 @@
 
 Student 1: Patrick Wang (924885084)
 
-Student 2: Qian Yu Guo (9254126896)
+Student 2: Qian Yu Guo (927297132)
 
 ## Project Status
 This the current status of the project
