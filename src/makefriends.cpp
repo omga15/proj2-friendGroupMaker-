@@ -63,11 +63,9 @@ int main(int argc, char *argv[]){
         People.insert(std::get<1>(Connection));
     }
     std::cerr<<"Processed ";
-    std::cerr.imbue(std::locale(std::cout.getloc(), new CommaSeparator));
+    std::cerr.imbue(std::locale(std::cerr.getloc(), new CommaSeparator));
     std::cerr<<People.size()<<" people with ";
-    std::cerr.imbue(std::locale(std::cout.getloc(), new CommaSeparator));
     std::cerr<<FriendConnections.size()<<" connections in ";
-    std::cerr.imbue(std::locale(std::cout.getloc(), new CommaSeparator));
     std::cerr<<Duration.count()<<"ns."<<std::endl;
     return EXIT_SUCCESS;
 }

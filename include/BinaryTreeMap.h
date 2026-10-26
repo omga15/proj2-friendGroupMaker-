@@ -7,7 +7,7 @@
 template <class K, class V>    
 class CBinaryTreeMap: public CMap<K,V>{
     private:
-        struct SNode{
+        struct SNode: public std::enable_shared_from_this<SNode>{
             K DKey;
             V DValue;
             std::shared_ptr<SNode> DLeft;
@@ -52,54 +52,41 @@ class CBinaryTreeMap: public CMap<K,V>{
                 }
                 return false;
             }
-            // Need more work
-            void GetMax(K &maxKey, V &maxVal){
+
+            std::shared_ptr<SNode> RemoveRightMost(K &key, V &val){
                 if(DRight){
-                    DRight->GetMax(maxKey,maxVal);
-                } else {
-                    maxKey = DKey;
-                    maxVal = DValue;
+                    DRight = DRight->RemoveRightMost(key, val);
+                    return this->shared_from_this();
+                }
+                else{
+                    key = DKey;
+                    val = DValue;
+                    return DLeft;
                 }
             }
 
-            void GetMin(K &minKey, V &minVal) {
-                if (DLeft) {
-                    DLeft->GetMin(minKey, minVal);
-                } else {
-                    minKey = DKey;
-                    minVal = DValue;
+            std::shared_ptr<SNode> RemoveLeftMost(K &key, V &val){
+                if(DLeft){
+                    DLeft = DLeft->RemoveLeftMost(key,val);
+                    return this->shared_from_this();
+                }
+                else{
+                    key = DKey;
+                    val = DValue;
+                    return DRight;
                 }
             }
+
+
             bool Remove(const K &key, bool &removeme){
                 if(key == DKey){
                     if(DLeft){
                         // Get the right most value of left subtree and remove
-                        K RMKey;
-                        V RMValue;
-                        DLeft-> GetMax(RMKey,RMValue);
-                        DKey = RMKey;
-                        DValue = RMValue;
-
-                        if (DLeft->Remove(RMKey, removeme)) {
-                            if (removeme) {
-                                DLeft.reset();
-                            }
-                            removeme = false;
-                        }
+                        DLeft = DLeft->RemoveRightMost(DKey,DValue);
                     }
                     else if(DRight){
                         // Get the left most value of right subtree and remove
-                        K LMKey;
-                        V LMValue;
-                        DRight-> GetMin(LMKey,LMValue);
-                        DKey = LMKey;
-                        DValue = LMValue;
-                        if (DRight->Remove(LMKey, removeme)) {
-                            if (removeme) {
-                                DRight.reset();
-                            }
-                            removeme = false;
-                        }
+                        DRight = DRight->RemoveLeftMost(DKey,DValue);
                     }
                     else{
                         // remove this node
@@ -129,6 +116,16 @@ class CBinaryTreeMap: public CMap<K,V>{
                     }
                 }
                 return false;
+            }
+
+            void ForEach(CMap<K,V>::TEntityFunction fun){ // function that goes through binary tree
+                if(DLeft){
+                    DLeft->ForEach(fun);
+                }
+                fun(DKey,DValue);
+                if(DRight){
+                    DRight->ForEach(fun);
+                }
             }
         };
         std::shared_ptr<SNode> DRoot;
@@ -177,9 +174,9 @@ class CBinaryTreeMap: public CMap<K,V>{
         }
 
         void ForEach(CMap<K,V>::TEntityFunction fun) override{
-            // do soemthing with the friends that someone made
-            K key;
-            V value;
+            if(DRoot){
+                DRoot->ForEach(fun);
+            }
         }
 };
 

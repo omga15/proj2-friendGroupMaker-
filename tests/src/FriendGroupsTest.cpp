@@ -24,7 +24,6 @@ TEST_F(FriendGroupsTest, SingleGroupTest){
     Groups.AddFriendship(CFriendGroups::TConnection{"C", "D"});
     EXPECT_FALSE(Groups.SameFriendGroup(CFriendGroups::TConnection{"A", "C"}));
     auto FriendshipsNeeded = Groups.FriendshipsForSingleGroup();
-    
     EXPECT_EQ(FriendshipsNeeded.size(), 1);
     if(FriendshipsNeeded.size()){
         auto MinFriend = std::min(std::get<0>(FriendshipsNeeded[0]), std::get<1>(FriendshipsNeeded[0]));
