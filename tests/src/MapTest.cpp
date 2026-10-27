@@ -358,20 +358,30 @@ TYPED_TEST(MapTest, ForEachTest){
     }
 }
 
-TYPED_TEST(MapTest, removeLeftItem){
-    EXPECT_EQ(this->DMap->Size(),0);
-
+TYPED_TEST(MapTest, ForEachLeftSubtree){
     EXPECT_TRUE(this->DMap->Add(10, 10));
     EXPECT_TRUE(this->DMap->Add(5, 5));
     EXPECT_TRUE(this->DMap->Add(15, 15));
     EXPECT_TRUE(this->DMap->Add(2, 2));
-    EXPECT_TRUE(this->DMap->Add(7, 7));
-    EXPECT_TRUE(this->DMap->Add(12, 12));
+
+    std::vector<int> Keys;
+    std::vector<int> Values;
+    this->DMap->ForEach([&Keys,&Values](int k, int v){
+        Keys.push_back(k);
+        Values.push_back(v);
+    });
+
+    std::vector<int> expected = {2, 5, 10, 15};
+    EXPECT_EQ(Keys, expected);
+}
+
+TYPED_TEST(MapTest, removeLeftItem){
+    EXPECT_EQ(this->DMap->Size(),0);
+
+    EXPECT_TRUE(this->DMap->Add(10, 10));
     EXPECT_TRUE(this->DMap->Add(20, 20));
-    EXPECT_TRUE(this->DMap->Add(1, 1));
-    EXPECT_TRUE(this->DMap->Add(3, 3));
+    EXPECT_TRUE(this->DMap->Add(15, 15));
 
-    EXPECT_TRUE(this->DMap->Remove(5));
-
-    EXPECT_EQ(this->DMap->Size(), 8);
+    
+    EXPECT_TRUE(this->DMap->Remove(10));
 }

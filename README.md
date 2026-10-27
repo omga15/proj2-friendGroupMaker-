@@ -5,10 +5,10 @@ Student 1: Patrick Wang (924885084)
 Student 2: Qian Yu Guo (927297132)
 
 ## Project Status
-This the current status of the project
+This the current status of the project is that its finished. 
 
 ## Known Issues
-The project fails to function properly in 
+The project fails to function properly in Analysis wher ethe time table 
 
 ## Code References
 * [Different ways to initialize variables](https://stackoverflow.com/questions/22543875/different-ways-to-initialize-variables)
@@ -19,10 +19,17 @@ The project fails to function properly in
 * [Lambda's in vectors](https://www.geeksforgeeks.org/cpp/capture-std-vector-in-lambda-function/)
     * [Lambda Captures](https://www.geeksforgeeks.org/cpp/lambda-capture-clause-in-cpp/)
 * [Makefile tuto](https://makefiletutorial.com/)
-* [__________](____________)
-* [__________](____________)
-* [__________](____________)
-* [__________](____________)
+* [Union By Rank and Path Compression in Union-Find Algorithm](https://www.geeksforgeeks.org/dsa/union-by-rank-and-path-compression-in-union-find-algorithm/)
+* [Union Find(disjoint set)](https://www.geeksforgeeks.org/dsa/introduction-to-disjoint-set-data-structure-or-union-find-algorithm/)
+* [Mutable: changing const to not constant ](https://www.geeksforgeeks.org/cpp/c-mutable-keyword/)
+* [Vector are const](https://stackoverflow.com/questions/27065617/const-vector-implies-const-elements)
+* [Back() for vectors](https://www.geeksforgeeks.org/cpp/vector-back-in-cpp-stl/)
+* [Vector functions](https://www.geeksforgeeks.org/cpp/vector-in-cpp-stl/)
+* [Swap function](https://www.geeksforgeeks.org/cpp/vector-swap-in-cpp-stl/) 
+* [Union by rank and path compression](https://www.geeksforgeeks.org/dsa/union-by-rank-and-path-compression-in-union-find-algorithm/)
+* []()
+* []()
+* []()
 
 
 ## Generative AI Use
@@ -107,6 +114,181 @@ run_makefriends: run_valgrind_makefriends
 	    $(MAKE_FRIENDS_TARGET) -f $$f;	\
 	done
 ``` 
+### Prompt 3
+can you show me an example code in cpp of a Weighted Quick Union w/ Path Compression – Compress paths while doing union, almost constant amortized time?
+
+### Response 3
+```cpp
+#include <iostream>
+#include <vector>
+#include <numeric>
+
+class WeightedQuickUnionPC {
+private:
+    std::vector<int> parent;   // parent[i] = parent of node i
+    std::vector<int> sz;       // sz[i] = size of tree rooted at i
+    int count;                 // number of connected components
+
+public:
+    explicit WeightedQuickUnionPC(int n) : parent(n), sz(n, 1), count(n) {
+        std::iota(parent.begin(), parent.end(), 0);  // parent[i] = i
+    }
+
+    // Path halving: point every other node on the path to its grandparent
+    int find(int p) {
+        while (p != parent[p]) {
+            parent[p] = parent[parent[p]];
+            p = parent[p];
+        }
+        return p;
+    }
+
+    bool connected(int p, int q) {
+        return find(p) == find(q);
+    }
+
+    void unite(int p, int q) {
+        int rootP = find(p);
+        int rootQ = find(q);
+        if (rootP == rootQ) return;
+
+        // Weighting: attach the smaller tree under the larger one
+        if (sz[rootP] < sz[rootQ]) {
+            parent[rootP] = rootQ;
+            sz[rootQ] += sz[rootP];
+        } else {
+            parent[rootQ] = rootP;
+            sz[rootP] += sz[rootQ];
+        }
+        --count;
+    }
+
+    int components() const { return count; }
+};
+
+int main() {
+    WeightedQuickUnionPC uf(10);
+
+    uf.unite(4, 3);
+    uf.unite(3, 8);
+    uf.unite(6, 5);
+    uf.unite(9, 4);
+    uf.unite(2, 1);
+
+    std::cout << std::boolalpha;
+    std::cout << uf.connected(8, 9) << "\n";   // true
+    std::cout << uf.connected(5, 4) << "\n";   // false
+    std::cout << uf.components() << "\n";      // 5
+
+    return 0;
+}
+```
+Notes
+
+union is a reserved keyword in C++, so the method is named unite.
+find is non-const because path compression modifies parent, so connected is non-const too.
+Compile with: g++ -std=c++17 -O2 uf.cpp -o uf
+
+Full (two-pass) path compression variant
+
+Swap in this find to point every node on the path directly at the root:
+
+``` cpp
+int find(int p) {
+    int root = p;
+    while (root != parent[root]) root = parent[root];
+    while (p != root) {
+        int next = parent[p];
+        parent[p] = root;
+        p = next;
+    }
+    return root;
+}
+``` 
+
+Embedded note: if you want this on an Arduino or similar, swap std::vector for fixed-size arrays (e.g., int parent[N]; int sz[N]; with N as a compile-time constant), since dynamic allocation is usually best avoided on small microcontrollers. Happy to write that version if useful.
+### Changes 3 
+Gave me an idea of how the algroithm for Weighted Quick Union w/ Path Compression. for Add element, Union, and Find
+
+```cpp
+    mutable std::vector<TElementID> DParent;
+    std::vector<std::size_t> DGroup;       // size of the group
+    std::size_t Dcount;
+
+    TElementID AddElement(){
+        TElementID NewElementID = DParent.size();
+        DParent.push_back(NewElementID);
+        DGroup.push_back(1);
+        Dcount++;
+        return NewElementID;
+    }
+
+    bool Union(TElementID a, TElementID b){
+        if(!IsValidElementID(a) || !IsValidElementID(b)){
+            return false;
+        }
+        auto AGroup = Find(a);
+        auto BGroup = Find(b);
+        if(AGroup==BGroup){
+            return false;
+        }
+
+        if(DGroup[AGroup] < DGroup[BGroup]){
+            std::swap(AGroup,BGroup);
+
+        } else {
+            std::swap(AGroup,BGroup);
+
+        }
+        return true ;
+        ++Dcount;
+    }
+    
+    TGroupID Find(TElementID a) const{
+        if(!IsValidElementID(a)){
+            return InvalidGroupID;
+        }
+        TElementID root = a;
+        while(root != DParent[root]){
+            root = DParent[root];
+        }
+        while(a != root){
+            TElementID next = DParent[a];
+            DParent[a] = root;
+            a = next;
+        }
+        return root;
+    }
+```
+### Prompt 4
+how to swap two values in a vector?
+### Response 4
+```cpp
+
+#include <vector>
+#include <algorithm>   // std::swap (also in <utility>)
+
+std::vector<int> v = {10, 20, 30, 40};
+
+std::swap(v[0], v[3]);   // v is now {40, 20, 30, 10}
+
+```
+### Changes 4
+
+Didn't need to use this code of swapping manually and adding the root. 
+```cpp
+if (sz[rootP] < sz[rootQ]) {
+            parent[rootP] = rootQ;
+            sz[rootQ] += sz[rootP];
+```
+
+```cpp
+ std::swap(AGroup,BGroup);
+
+ and then added reduction
+ DParent[AGroup] = BGroup;
+ DGroup[BGroup] += DGroup[AGroup];
+```
 
 # Template for Ai use
 ## Generative AI Use

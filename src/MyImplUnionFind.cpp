@@ -3,36 +3,28 @@
 #include <vector>
 
 struct CMyImplUnionFind::SImplementation{
-    struct SNode{
-        std::shared_ptr<SNode> DParent;
-        TElementID DID;
-    };
-
-    std::vector<std::shared_ptr<SNode> > DElements;
-
+    
+    mutable std::vector<TElementID> DParent;
+    std::vector<std::size_t> DGroup;       // size of the group
+    std::size_t Dcount;
 
     bool IsValidElementID(TElementID element) const{
-        return element < DElements.size();
+        return element < DParent.size();
     }
 
     std::size_t Size() const{
-        return DElements.size();
+        return DParent.size();
     }
 
     std::size_t GroupCount() const{
-        std::size_t Count = 0;
-        for(auto Element : DElements){
-            if(!Element->DParent){
-                Count++;
-            }
-        }
-        return Count;
+        return Dcount;
     }
 
     TElementID AddElement(){
-        TElementID NewElementID = DElements.size();
-        DElements.push_back(std::make_shared<SNode>());
-        DElements.back()->DID = NewElementID;
+        TElementID NewElementID = DParent.size();
+        DParent.push_back(NewElementID);
+        DGroup.push_back(1);
+        Dcount++;
         return NewElementID;
     }
 
@@ -40,27 +32,37 @@ struct CMyImplUnionFind::SImplementation{
         if(!IsValidElementID(a) || !IsValidElementID(b)){
             return false;
         }
-        
         auto AGroup = Find(a);
         auto BGroup = Find(b);
-        if(AGroup != BGroup){
-            DElements[BGroup]->DParent = DElements[AGroup];
-            return true;
+        if(AGroup==BGroup){
+            return false;
         }
-        return false;
-        
+
+        if(DGroup[AGroup] < DGroup[BGroup]){
+            std::swap(AGroup,BGroup);
+        } 
+        DParent[BGroup] = AGroup;
+        DGroup[AGroup] += DGroup[BGroup];
+        --Dcount;
+        return true;   
     }
     
     TGroupID Find(TElementID a) const{
         if(!IsValidElementID(a)){
             return InvalidGroupID;
         }
-        auto CurrentNode = DElements[a];
-        while(CurrentNode->DParent){
-            CurrentNode = CurrentNode->DParent;
+        TElementID root = a;
+        while(root != DParent[root]){
+            root = DParent[root];
         }
-        return CurrentNode->DID;
+        while(a != root){
+            TElementID next = DParent[a];
+            DParent[a] = root;
+            a = next;
+        }
+        return root;
     }
+    
 
     bool Connected(TElementID a, TElementID b){
         auto AGroup = Find(a);
