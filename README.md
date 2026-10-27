@@ -27,7 +27,7 @@ The project fails to function properly in Analysis wher ethe time table
 * [Vector functions](https://www.geeksforgeeks.org/cpp/vector-in-cpp-stl/)
 * [Swap function](https://www.geeksforgeeks.org/cpp/vector-swap-in-cpp-stl/) 
 * [Union by rank and path compression](https://www.geeksforgeeks.org/dsa/union-by-rank-and-path-compression-in-union-find-algorithm/)
-* []()
+* [https://www.geeksforgeeks.org/dsa/implementation-of-hash-table-in-c-using-separate-chaining/](https://www.geeksforgeeks.org/dsa/implementation-of-hash-table-in-c-using-separate-chaining/)
 * []()
 * []()
 
@@ -288,6 +288,120 @@ if (sz[rootP] < sz[rootQ]) {
  and then added reduction
  DParent[AGroup] = BGroup;
  DGroup[BGroup] += DGroup[AGroup];
+```
+### Prompt 5
+can you make a can you make a hash table that in cpp?
+
+### Response 5
+```cpp
+#include <iostream>
+#include <list>
+#include <string>
+
+class HashTable {
+private:
+    static const int numBuckets = 10; 
+    // Array of lists to handle collisions via separate chaining
+    std::list<std::pair<int, std::string>> table[numBuckets];
+
+    // Simple hash function to map a key to a bucket index
+    int hashFunction(int key) {
+        return key % numBuckets;
+    }
+
+public:
+    // Insert a key-value pair into the hash table
+    void insert(int key, std::string value) {
+        int hashValue = hashFunction(key);
+        auto& bucket = table[hashValue];
+        
+        // Check if key already exists, update if found
+        for (auto it = bucket.begin(); it != bucket.end(); ++it) {
+            if (it->first == key) {
+                it->second = value; 
+                return;
+            }
+        }
+        
+        // If not found, insert new pair
+        bucket.emplace_back(key, value);
+    }
+
+    // Retrieve a value by its key
+    std::string get(int key) {
+        int hashValue = hashFunction(key);
+        auto& bucket = table[hashValue];
+        
+        for (auto it = bucket.begin(); it != bucket.end(); ++it) {
+            if (it->first == key) {
+                return it->second;
+            }
+        }
+        return "Key not found"; 
+    }
+
+    // Remove a key-value pair from the hash table
+    void remove(int key) {
+        int hashValue = hashFunction(key);
+        auto& bucket = table[hashValue];
+        
+        for (auto it = bucket.begin(); it != bucket.end(); ++it) {
+            if (it->first == key) {
+                bucket.erase(it);
+                std::cout << "Key " << key << " removed.\n";
+                return;
+            }
+        }
+        std::cout << "Key " << key << " not found to remove.\n";
+    }
+};
+
+```
+### Change 5 
+Gave the code element for Hashtable algroithm. Used for Add, Remove, and Find
+
+```cpp
+
+bool Add(const K &key, V val) override{
+            size_t index = CustomHash<K>()(key) % DTable.size();
+            
+            // 检查是否已经存在
+            for(auto &pair : DTable[index]){
+                if(pair.first == key){
+                    return false; 
+                }
+            }
+            
+            // 不存在就放到末尾
+            DTable[index].push_back(std::make_pair(key, val));
+            DSize++;
+            return true;
+        }
+
+        bool Remove(const K &key) override{
+            size_t index = CustomHash<K>()(key) % DTable.size();
+            
+            for(auto it = DTable[index].begin(); it != DTable[index].end(); ++it){
+                if(it->first == key){
+                    DTable[index].erase(it);
+                    DSize--;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        bool Find(const K &key, V &val) const override{
+            size_t index = CustomHash<K>()(key) % DTable.size();
+            
+            for(const auto &pair : DTable[index]){
+                if(pair.first == key){
+                    val = pair.second;
+                    return true;
+                }
+            }
+            return false;
+        }
 ```
 
 # Template for Ai use
