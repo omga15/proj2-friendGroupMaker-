@@ -5,10 +5,10 @@ Student 1: Patrick Wang (924885084)
 Student 2: Qian Yu Guo (927297132)
 
 ## Project Status
-This the current status of the project is that its finished. 
+The current status of the project is that its finished. 
 
 ## Known Issues
-The project fails to function properly in Analysis wher ethe time table 
+With our implementation the time table for a low amount of people is bigger in exchange for smaller growth rate
 
 ## Code References
 * [Different ways to initialize variables](https://stackoverflow.com/questions/22543875/different-ways-to-initialize-variables)
