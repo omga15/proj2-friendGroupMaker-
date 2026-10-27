@@ -18,7 +18,7 @@ struct CFriendGroups::SImplementation{
         return ElementID;
     }
 
-    bool SameFriendGroup(const TConnection &connection) noexcept{
+    bool SameFriendGroup(const TConnection &connection) noexcept{ // checks friend in tree if connected
         auto FirstName = std::get<0>(connection);
         auto SecondName = std::get<1>(connection);
         auto FirstElementID = GetElementID(FirstName);

@@ -70,6 +70,43 @@ Back in Bob, it calls fun("Bob", 0).
 Bob goes right, so Carol->ForEach(fun) runs and calls fun("Carol", 2).
 
 ### Changes 1
+none
+
+### Prompt 2
+How to run a loop in makefile
+
+### Reponse 2
+Make has no native loop construct, so you use either a shell loop inside a recipe or Make’s own functions. Here are the common approaches.
+
+1. Shell for loop in a recipe
+
+```makefile
+make
+DIRS := src lib tests
+
+build:
+	for dir in $(DIRS); do \
+		echo "Building $$dir"; \
+		$(MAKE) -C $$dir; \
+	done
+
+Notes:
+```
+
+Use $$ so the shell sees $dir (a single $ would be expanded by Make).
+Each line of a recipe runs in its own shell, so the loop must be joined with \ line continuations and ; separators.
+To stop on the first failure, add || exit 1 after the command (or use set -e; at the start):
+
+### Changes 2
+made to help write using prev makefile knowledge 
+
+```cp
+run_makefriends: run_valgrind_makefriends
+	for f in $(DATA_DIR)/*.csv; do 		\
+	    echo "== $$f"; 					\
+	    $(MAKE_FRIENDS_TARGET) -f $$f;	\
+	done
+``` 
 
 # Template for Ai use
 ## Generative AI Use

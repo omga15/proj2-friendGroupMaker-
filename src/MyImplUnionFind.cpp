@@ -37,26 +37,29 @@ struct CMyImplUnionFind::SImplementation{
     }
 
     bool Union(TElementID a, TElementID b){
-        if(IsValidElementID(a) && IsValidElementID(b)){
-            auto AGroup = Find(a);
-            auto BGroup = Find(b);
-            if(AGroup != BGroup){
-                DElements[BGroup]->DParent = DElements[AGroup];
-                return true;
-            }
+        if(!IsValidElementID(a) || !IsValidElementID(b)){
+            return false;
+        }
+        
+        auto AGroup = Find(a);
+        auto BGroup = Find(b);
+        if(AGroup != BGroup){
+            DElements[BGroup]->DParent = DElements[AGroup];
+            return true;
         }
         return false;
+        
     }
-
+    
     TGroupID Find(TElementID a) const{
-        if(IsValidElementID(a)){
-            auto CurrentNode = DElements[a];
-            while(CurrentNode->DParent){
-                CurrentNode = CurrentNode->DParent;
-            }
-            return CurrentNode->DID;
+        if(!IsValidElementID(a)){
+            return InvalidGroupID;
         }
-        return InvalidGroupID;
+        auto CurrentNode = DElements[a];
+        while(CurrentNode->DParent){
+            CurrentNode = CurrentNode->DParent;
+        }
+        return CurrentNode->DID;
     }
 
     bool Connected(TElementID a, TElementID b){
