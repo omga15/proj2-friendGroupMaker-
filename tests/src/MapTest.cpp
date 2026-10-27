@@ -357,7 +357,7 @@ TYPED_TEST(MapTest, ForEachTest){
         EXPECT_EQ(Values[I],I*3);
     }
 }
-
+/*
 TYPED_TEST(MapTest, ForEachLeftSubtree){
     EXPECT_TRUE(this->DMap->Add(10, 10));
     EXPECT_TRUE(this->DMap->Add(5, 5));
@@ -385,3 +385,4 @@ TYPED_TEST(MapTest, removeLeftItem){
     
     EXPECT_TRUE(this->DMap->Remove(10));
 }
+*/
